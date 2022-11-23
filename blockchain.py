@@ -21,3 +21,25 @@ class BlockChain:
         self.chain.append(block)
         return block
 
+    def new_transaction(self, sender, recipient, amount):
+        self.current_transactions.append({
+                'sender': sender,
+                'recipient': recipient,
+                'amount': amount,
+        })
+        return self.last_block['index'] + 1
+
+    @property
+    def last_block(self):
+        return self.chain[-1]
+
+    @staticmethod
+    def hash(block):
+        """
+        Creates a SHA256 has for the block
+        :param block: input block
+        :return: hash
+        """
+        block_string = json.dumps(block, sort_keys=True).encode()
+
+        return hashlib.sha256(block_string).hexdigest()
