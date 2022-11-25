@@ -1,6 +1,7 @@
 import hashlib
 from time import time
 import json
+from urllib.parse import urlparse
 
 from flask import Flask, jsonify, request
 from uuid import uuid4
@@ -10,6 +11,16 @@ class BlockChain:
     def __init__(self):
         self.current_transactions = []
         self.chain = []
+        self.nodes = set()
+
+    def register_node(self, address):
+        """
+        Adds new node to the list of nodes
+        :param address: <str> node url. Eg. "https://192.168.2.0:80"
+        :return: None
+        """
+        parsed_url = urlparse(address)
+        self.nodes.add(parsed_url.netloc)
 
     def new_block(self, proof, previous_hash=None):
         block = {
@@ -79,6 +90,7 @@ app = Flask(__name__)
 node_identifier = str(uuid4()).replace('-', '')
 # init blockchain
 blockchain = BlockChain()
+blockchain.new_block(proof=1, previous_hash=1)
 
 
 @app.route('/mine', methods=['GET'])
