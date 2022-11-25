@@ -13,6 +13,31 @@ class BlockChain:
         self.chain = []
         self.nodes = set()
 
+    def valid_chain(self, chain: list) -> bool:
+        """
+        Determine if a given blockchain is valid
+        :param chain: <list> A blockchain
+        :return: <bool> True if valid, false if not
+        """
+        if not chain:
+            return False
+        last_block = chain[0]
+        current_index = 1
+
+        while current_index < len(chain):
+            block = chain[current_index]
+            print(f'last_block: {last_block}')
+            print(f'block: {block}')
+            print(f'_'*20)
+            if block['previous_hash'] != self.hash(last_block):
+                return False
+            if not self.valid_proof(last_block['proof'], block['proof']):
+                return False
+            last_block = block
+            current_index += 1
+
+        return True
+
     def register_node(self, address):
         """
         Adds new node to the list of nodes
