@@ -166,6 +166,23 @@ def register_nodes():
     return jsonify(response), 201
 
 
+@app.route('/nodes/register', methods=['GET'])
+def consensus():
+    replaced = blockchain.resolve_conflicts()
+
+    if replaced:
+        response = {
+            'message': 'Our chain was replaced',
+            'new_chain': blockchain.chain
+        }
+    else:
+        response = {
+            'message': 'Our chain is authoritative',
+            'new_chain': blockchain.chain
+        }
+    return jsonify(response), 200
+
+
 @app.route('/mine', methods=['GET'])
 def mine():
     last_block = blockchain.last_block
