@@ -149,6 +149,23 @@ blockchain = BlockChain()
 blockchain.new_block(proof=1, previous_hash=1)
 
 
+@app.route('/nodes/register', methods=['POST'])
+def register_nodes():
+    values = request.get_json()
+    nodes = values.get('nodes')
+    if nodes is None:
+        return "Error: Please supply a valid list of nodes", 400
+
+    for node in nodes:
+        blockchain.register_node(node)
+
+    response = {
+        'message': 'new nodes have been added',
+        'total_nodes': list(blockchain.nodes),
+    }
+    return jsonify(response), 201
+
+
 @app.route('/mine', methods=['GET'])
 def mine():
     last_block = blockchain.last_block
